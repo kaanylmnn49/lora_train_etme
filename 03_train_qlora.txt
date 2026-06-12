@@ -1,0 +1,72 @@
+"""
+03_train_qlora.py
+=================
+Apple M5 Max çipi ve MLX kütüphanesini kullanarak
+Llama 3.1 8B modelini eğitir. (Sıfır grafik / Yeni Dizin)
+"""
+
+import os
+import sys
+import subprocess
+from pathlib import Path
+from rich.console import Console
+from rich.panel import Panel
+
+from config import CFG, DESKTOP
+
+console = Console()
+
+OUT = Path(CFG["output_dir"])
+OUT.mkdir(parents=True, exist_ok=True)
+ADAPTER_PATH = OUT / "final_adapter"
+
+def main():
+    console.print(Panel.fit(
+        "[bold cyan]MLX LoRA Fine-Tuning (Apple Silicon)[/bold cyan]\n"
+        f"[dim]Model: {CFG['model_id']}[/dim]",
+        title="🚀 Başlatılıyor"
+    ))
+
+    if CFG["hf_token"]:
+        os.environ["HF_TOKEN"] = CFG["hf_token"]
+
+    command = [
+        "python", "-m", "mlx_lm.lora",
+        "--model", CFG["model_id"],
+        "--train",
+        "--data", CFG["dataset_path"],
+        "--iters", str(CFG["iters"]),
+        "--batch-size", str(CFG["batch_size"]),
+        "--lora-layers", str(CFG["lora_layers"]),
+        "--learning-rate", str(CFG["learning_rate"]),
+        "--steps-per-eval", str(CFG["steps_per_eval"]),
+        "--val-batches", str(CFG["val_batches"]),
+        "--adapter-path", str(ADAPTER_PATH)
+    ]
+
+    console.print("\n[yellow]Çalıştırılan Sistem Komutu:[/yellow]")
+    console.print(f"[dim]{' '.join(command)}[/dim]")
+    console.print("\n[bold green]Eğitim Başlıyor... (M5 Max gücü devrede)[/bold green]\n")
+
+    try:
+        subprocess.run(command, check=True)
+        
+        console.print(Panel.fit(
+            f"[bold green]✅ MLX Eğitimi Başarıyla Tamamlandı![/bold green]\n\n"
+            f"Eğitilmiş Ağırlıklar : [cyan]{ADAPTER_PATH}[/cyan]\n\n"
+            f"[bold]Modelini test etmek için terminale şu komutu yazabilirsin:[/bold]\n"
+            f"[cyan]python -m mlx_lm.generate --model {CFG['model_id']} \\\n"
+            f"--adapter-path {ADAPTER_PATH} \\\n"
+            f"--prompt \"Aşağıdaki LSE piyasa verilerini kullanarak...\"[/cyan]",
+            title="🎉 Bitti"
+        ))
+        
+    except subprocess.CalledProcessError:
+        console.print("\n[bold red]HATA:[/bold red] Eğitim sırasında bir sorun oluştu.")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        console.print("\n[bold yellow]UYARI:[/bold yellow] Eğitim kullanıcı tarafından durduruldu.")
+        sys.exit(0)
+
+if __name__ == "__main__":
+    main()
