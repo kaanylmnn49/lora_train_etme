@@ -1,0 +1,47 @@
+"""
+03_train_qlora.py
+=================
+Llama 3.1 8B modelini MLX ile eğitir.
+"""
+import os
+import sys
+import subprocess
+from pathlib import Path
+from rich.console import Console
+from rich.panel import Panel
+from config import CFG
+
+console = Console()
+OUT = Path(CFG["output_dir"])
+OUT.mkdir(parents=True, exist_ok=True)
+ADAPTER_PATH = OUT / "final_adapter"
+
+def main():
+    if CFG["hf_token"]:
+        os.environ["HF_TOKEN"] = CFG["hf_token"]
+
+    # Parametrelerin doğru aktarılması için liste formatı
+    command = [
+        "python", "-m", "mlx_lm.lora",
+        "--model", CFG["model_id"],
+        "--train",
+        "--data", CFG["dataset_path"],
+        "--iters", str(CFG["iters"]),
+        "--batch-size", str(CFG["batch_size"]),
+        "--lora-layers", str(CFG["lora_layers"]),
+        "--learning-rate", str(CFG["learning_rate"]),
+        "--steps-per-eval", str(CFG["steps_per_eval"]),
+        "--val-batches", str(CFG["val_batches"]),
+        "--adapter-path", str(ADAPTER_PATH)
+    ]
+
+    console.print("[yellow]Eğitim başlatılıyor...[/yellow]")
+    try:
+        subprocess.run(command, check=True)
+        console.print("[bold green]✅ Eğitim başarıyla tamamlandı![/bold green]")
+    except subprocess.CalledProcessError:
+        console.print("[bold red]❌ Eğitim sırasında bir hata oluştu.[/bold red]")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
