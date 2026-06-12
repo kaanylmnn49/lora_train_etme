@@ -1,0 +1,4 @@
+python -m mlx_lm.generate \
+  --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit \
+  --adapter-path ~/Desktop/lora_train_etme/llama31_8b_lse_mlx/final_adapter \
+  --prompt "HSBA.L hissesinin teknik analizi nedir?"
