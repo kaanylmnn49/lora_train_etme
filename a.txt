@@ -1,0 +1,1 @@
+python -m mlx_lm.lora --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --train --data ~/Desktop/lora_train_etme --iters 1000 --batch-size 4 --lora-layers 32 --learning-rate 2e-5 --steps-per-eval 50 --val-batches 10 --adapter-path ~/Desktop/lora_train_etme/llama31_8b_lse_mlx/final_adapter
