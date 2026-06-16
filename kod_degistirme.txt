@@ -1,0 +1,13 @@
+def build_chat_text(instruction: str, response: str) -> str:
+    system_prompt = (
+        "Sen deneyimli bir London Stock Exchange (LSE) finansal analistisin. "
+        "Teknik analiz, temel analiz ve piyasa psikolojisi konularında uzmansın."
+    )
+    return (
+        f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
+        f"{system_prompt}<|eot_id|>"
+        f"<|start_header_id|>user<|end_header_id|>\n\n"
+        f"{instruction}<|eot_id|>"
+        f"<|start_header_id|>assistant<|end_header_id|>\n\n"
+        f"{response}<|eot_id|>"
+    )
