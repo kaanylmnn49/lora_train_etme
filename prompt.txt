@@ -1,0 +1,5 @@
+python -m mlx_lm.generate \
+    --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit \
+    --adapter-path ~/Desktop/lora_train_etme/llama31_8b_lse_mlx/final_adapter \
+    --prompt "SHEL.L hissesi için teknik analiz raporu hazırla. RSI: 72, MACD pozitif, trend yükseliş." \
+    --max-tokens 500
