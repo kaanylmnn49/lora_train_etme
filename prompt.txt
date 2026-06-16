@@ -1,19 +1,4 @@
 python -m mlx_lm.generate \
     --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit \
-    --adapter-path ~/Desktop/lora_train_etme/llama31_8b_lse_mlx/final_adapter \
-    --prompt "Aşağıdaki London Stock Exchange (LSE) piyasa verilerini kullanarak SHEL.L hissesi (Enerji sektörü) için kapsamlı bir teknik analiz raporu hazırla.
-
-=== Piyasa Verileri (15 Haziran 2026) ===
-Hisse          : SHEL.L
-Sektör         : Enerji
-Kapanış Fiyatı : 2847.50 GBX
-Günlük Getiri  : +1.25%
-5 Günlük Getiri: +2.30%
-20 Günlük Getiri: +4.10%
-Hacim Durumu   : ortalamanın 1.4 katı — yüksek hacim
-RSI(14)        : 72.0
-MACD           : 0.00123  |  Sinyal: 0.00089
-Bollinger Pozisyon: %78  (0=alt bant, 100=üst bant)
-ATR(14)        : 45.20 GBX
-50G MA Trend   : yükseliş" \
-    --max-tokens 600
+    --prompt "Türkiye'nin başkenti neresidir?" \
+    --max-tokens 100
